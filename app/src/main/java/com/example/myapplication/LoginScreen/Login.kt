@@ -74,6 +74,8 @@ fun Login(navController: NavController){
             value = username,
             onValueChange = { username = it },
             label = { Text("Username") },
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
         )
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -82,11 +84,13 @@ fun Login(navController: NavController){
             value = password,
             onValueChange = { password = it },
             label = { Text("Password") },
-            visualTransformation = PasswordVisualTransformation()
+            visualTransformation = PasswordVisualTransformation(),
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
         )
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(10.dp,0.dp),
             horizontalArrangement = Arrangement.End
         ) {
             TextButton(
@@ -100,12 +104,13 @@ fun Login(navController: NavController){
 
 
         NewsTextButton(
-            modifier = Modifier.fillMaxWidth(0.8f).padding(horizontal = MediumPadding2),
+            modifier = Modifier.fillMaxWidth(0.8f),
             text = "Login",
             onClick = {
                 loginUser(context, username, password, navController)
 
-            }
+            },
+
         )
 
         Spacer(modifier = Modifier.height(5.dp))
