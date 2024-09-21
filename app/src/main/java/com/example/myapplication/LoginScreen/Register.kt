@@ -158,6 +158,7 @@ fun Register(navController: NavController) {
                 onClick = {
 
                     registerUser(context, fullname, email, username, password, navController)
+                    navController.navigate("Addprofile")
                 }
             )
 

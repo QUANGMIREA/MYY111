@@ -54,6 +54,12 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.google.accompanist:accompanist-flowlayout:0.30.1")
+    implementation("androidx.compose.ui:ui:1.0.5")
+    implementation("androidx.compose.material:material:1.0.5")
+    implementation("androidx.compose.ui:ui-tooling:1.0.5")
+    implementation("androidx.compose.runtime:runtime-livedata:1.0.5")
+    implementation("androidx.compose.material3:material3:1.0.0-alpha13")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

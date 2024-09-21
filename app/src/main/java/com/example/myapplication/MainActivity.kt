@@ -19,6 +19,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.LoginScreen.Login
 import com.example.myapplication.LoginScreen.Register
+import com.example.myapplication.addProfile.AddPetProfileScreen
 import com.example.myapplication.presentation.onboarding.OnBoardingScreen
 import com.example.myapplication.presentation.onboarding.components.OnBoardingPage
 import com.example.myapplication.ui.theme.MyApplicationTheme
@@ -40,6 +41,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("Register"){
                             Register(navController)
+                        }
+                        composable("Addprofile"){
+                            AddPetProfileScreen(navController)
                         }
 
                     })
