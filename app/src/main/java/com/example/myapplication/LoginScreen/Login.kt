@@ -38,7 +38,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.Model.LoginResponse
 import com.example.myapplication.api.RetrofitClient
 import com.example.myapplication.presentation.common.NewsTextButton
-import com.example.myapplication.presentation.onboarding.Dimens.MediumPadding2
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import retrofit2.Call
 import retrofit2.Callback

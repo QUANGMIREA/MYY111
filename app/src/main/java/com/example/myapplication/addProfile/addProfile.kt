@@ -101,7 +101,7 @@ fun AddPetProfileScreen(navController: NavController) {
                 ) {
                     IconButton(
                         onClick = {
-
+                            navController.navigate("Opencamera")
                         },
                         modifier = Modifier
                             .size(120.dp)
@@ -134,7 +134,7 @@ fun AddPetProfileScreen(navController: NavController) {
                 ) {
                     IconButton(
                         onClick = {
-
+                            navController.navigate("InfoPet")
                         },
                         modifier = Modifier
                             .size(120.dp)

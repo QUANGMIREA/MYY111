@@ -20,6 +20,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.LoginScreen.Login
 import com.example.myapplication.LoginScreen.Register
 import com.example.myapplication.addProfile.AddPetProfileScreen
+import com.example.myapplication.addProfile.CameraScreen
+import com.example.myapplication.addProfile.PetInfoScreen
 import com.example.myapplication.presentation.onboarding.OnBoardingScreen
 import com.example.myapplication.presentation.onboarding.components.OnBoardingPage
 import com.example.myapplication.ui.theme.MyApplicationTheme
@@ -44,6 +46,12 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("Addprofile"){
                             AddPetProfileScreen(navController)
+                        }
+                        composable("Infopet"){
+                            PetInfoScreen(navController)
+                        }
+                        composable("Opencamera"){
+                            CameraScreen(isPreview = false,navController)
                         }
 
                     })

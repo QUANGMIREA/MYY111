@@ -21,4 +21,14 @@ interface ApiService {
         @Field("username") username: String,
         @Field("password") password: String
     ): Call<LoginResponse>
+    @FormUrlEncoded
+    @POST("infopet.php")
+    fun pushinfoPet(
+        @Field("namepet") namepet: String,
+        @Field("typeofpet") typeofpet: String,
+        @Field("dateofbirth") dateofbirth: String,
+        @Field("weight") weight: String,
+        @Field("selectgender") selectgender : String,
+        @Field("nutrition") nutrition: String
+    ): Call<LoginResponse>
 }
