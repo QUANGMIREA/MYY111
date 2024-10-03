@@ -4,6 +4,7 @@ package com.example.myapplication.addProfile
 import android.content.Context
 import android.util.Log
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
@@ -19,7 +20,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-
+import android.os.Environment
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -46,6 +47,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
+var imageCapture: ImageCapture? = null
 
 @Composable
 fun CameraScreen(isPreview: Boolean = false,navController: NavController) {
@@ -153,6 +155,8 @@ fun BottomCameraControls() {
 
 }
 
+
+
 @Composable
 fun CameraPreviewView(context: Context, lifecycleOwner: LifecycleOwner) {
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
@@ -170,10 +174,11 @@ fun CameraPreviewView(context: Context, lifecycleOwner: LifecycleOwner) {
                 }
 
                 val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+                imageCapture = ImageCapture.Builder().build()
 
                 cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(
-                    lifecycleOwner, cameraSelector, preview
+                    lifecycleOwner, cameraSelector, preview, imageCapture
                 )
             } catch (exc: Exception) {
                 Log.e("CameraX", "Use case binding failed", exc)
