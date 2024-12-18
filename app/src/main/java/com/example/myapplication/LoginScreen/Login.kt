@@ -1,5 +1,6 @@
 package com.example.myapplication.LoginScreen
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.getValue
@@ -106,8 +107,7 @@ fun Login(navController: NavController){
             modifier = Modifier.fillMaxWidth(0.8f),
             text = "Login",
             onClick = {
-                loginUser(context, username, password, navController)
-
+                loginUser(context, username, password,navController)
             },
 
         )
@@ -150,9 +150,18 @@ fun loginUser(context: android.content.Context, username: String, password: Stri
                 val loginResponse = response.body()
                 if (loginResponse != null && loginResponse.success == true) {
                     // Đăng nhập thành công
+
+                    val userId = loginResponse.result?.firstOrNull()?.user_id ?: -1 // Lấy user_id của user đầu tiên
+                    val sharedPreferences = context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
+                    val editor = sharedPreferences.edit()
+                    println(userId)
+                    editor.putInt("user_id", userId)
+                    editor.apply()
+
                     Toast.makeText(context, loginResponse.message, Toast.LENGTH_SHORT).show()
-                    // Điều hướng sang màn hình khác
-                    //navController.navigate("HomeScreen")
+                    navController.navigate("HomeScreen")
+
+
                 } else {
                     // Đăng nhập thất bại
                     Toast.makeText(context, loginResponse?.message ?: "Lỗi đăng nhập", Toast.LENGTH_SHORT).show()
@@ -165,6 +174,11 @@ fun loginUser(context: android.content.Context, username: String, password: Stri
             }
         })
 }
+fun getUserId(context: Context): Int {
+    val sharedPreferences = context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
+    return sharedPreferences.getInt("user_id", -1)  // Trả về -1 nếu không tìm thấy user_id
+}
+
 @Preview(showBackground = true)
 @Composable
 fun Loginreview(){

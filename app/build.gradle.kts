@@ -40,7 +40,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.0"
     }
     packaging {
         resources {
@@ -58,15 +58,22 @@ dependencies {
     implementation("androidx.camera:camera-extensions:1.2.3")
 
     // Update Compose dependencies to a stable version
+
+
+
+
+    implementation("androidx.compose.material3:material3:1.2.0")
     implementation("androidx.compose.ui:ui:1.5.0")
     implementation("androidx.compose.material:material:1.5.0")
     implementation("androidx.compose.ui:ui-tooling:1.5.0")
     implementation("androidx.compose.runtime:runtime-livedata:1.5.0")
-    implementation("androidx.compose.material3:material3:1.2.0")
+
 
     // Navigation Compose
     val nav_version = "2.8.0"
     implementation("androidx.navigation:navigation-compose:$nav_version")
+
+
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -82,6 +89,9 @@ dependencies {
 
     // Jetpack Compose BOM
     implementation(platform(libs.androidx.compose.bom))
+    //getimage
+    implementation("io.coil-kt:coil-compose:2.0.0")
+
 
     // Other dependencies
     testImplementation(libs.junit)

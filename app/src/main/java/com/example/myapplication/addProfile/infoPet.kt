@@ -1,6 +1,7 @@
 package com.example.myapplication.addProfile
 
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -250,16 +251,23 @@ fun PetInfoForm(modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxWidth(0.8f),
             text = "Save Data",
             onClick = {
-                pushinfoPet(context ,namepet, typeofpet ,dateofbirth ,weight ,selectedgender, selectedOptions.value.joinToString(", ") )
+                // Giả sử bạn lưu user_id trong SharedPreferences, lấy ra để truyền vào API
+                val sharedPreferences = context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
+                val userId = sharedPreferences.getInt("user_id", -1)
 
+                if (userId != -1) {
+                    pushinfoPet(context, userId, namepet, typeofpet, dateofbirth, weight, selectedgender, selectedOptions.value.joinToString(", "))
+                } else {
+                    Toast.makeText(context, "User ID not found. Please login again.", Toast.LENGTH_SHORT).show()
+                }
             },
 
             )
 
     }
 }
-fun pushinfoPet(context: android.content.Context, namepet: String, typeofpet: String, dateofbirth: String, weight: String, selectgender:String, nutrition: String){
-    RetrofitClient.instance.pushinfoPet(namepet, typeofpet, dateofbirth,weight,selectgender,nutrition)
+fun pushinfoPet(context: android.content.Context,user_id: Int, namepet: String, typeofpet: String, dateofbirth: String, weight: String, selectgender:String, nutrition: String){
+    RetrofitClient.instance.pushinfoPet(user_id,namepet, typeofpet, dateofbirth,weight,selectgender,nutrition)
         .enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 val loginResponse = response.body()

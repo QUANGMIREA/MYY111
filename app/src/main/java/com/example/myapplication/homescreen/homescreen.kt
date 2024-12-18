@@ -1,31 +1,15 @@
 package com.example.myapplication.homescreen
 
-import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.TabRowDefaults.Divider
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
@@ -33,6 +17,10 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,27 +33,56 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberImagePainter
 import com.example.myapplication.R
 import com.example.myapplication.presentation.common.ContainerBorder
 import com.example.myapplication.presentation.common.Containerdemo
 import com.example.myapplication.presentation.common.NewsTextButton
 import com.example.myapplication.presentation.common.subcorcontainer
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import StoreScreen
+import android.content.Context
+import androidx.compose.ui.platform.LocalContext
+import com.example.myapplication.LoginScreen.getUserId
+import com.example.myapplication.Model.CartState
+import com.example.myapplication.homescreen.bag.bagscreen
+import com.example.myapplication.homescreen.cart.CartScreen
+
 
 @Composable
-fun PetProfileScreen() {
+fun PetProfileScreen(petProfileViewModel: PetProfileViewModel,cartViewModel: CartViewModel, navController: NavController) {
+    val currentScreen = remember { mutableStateOf<Screen>(Screen.Home) }
+    val context = LocalContext.current
+    val sharedPreferences = context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
+    val userId = getUserId(context)
+
+
     Scaffold(
-        bottomBar = { BottomNavigationBar() },
-        content = {
-            paddingValues -> PetProfileform(modifier = Modifier.padding(paddingValues))
-
+        bottomBar = { BottomNavigationBar(currentScreen) },
+        content = { paddingValues ->
+            Box(modifier = Modifier.padding(paddingValues)
+                //.fillMaxSize().padding(bottom = 40.dp)
+            )
+            {
+                when (currentScreen.value) {
+                    is Screen.Home -> PetProfileform(viewModel =petProfileViewModel)
+                    is Screen.Store -> StoreScreen(viewModel = petProfileViewModel,currentScreen)
+                    is Screen.Cart -> CartScreen(viewModel = cartViewModel, userId ,currentScreen = currentScreen, navController = navController)
+                    is Screen.Bag -> bagscreen(viewModel = petProfileViewModel,currentScreen)
+                }
+            }
         }
-
     )
-
 }
+
+
 @Composable
-fun PetProfileform(modifier: Modifier = Modifier){
+fun PetProfileform(modifier: Modifier = Modifier,viewModel: PetProfileViewModel){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -97,7 +114,7 @@ fun PetProfileform(modifier: Modifier = Modifier){
         DiscoverProductsSection()
 
         //Demo product
-        DemoProduct()
+        DemoProduct(viewModel = viewModel)
 
 
         Spacer(modifier = Modifier.height(100.dp))
@@ -415,9 +432,37 @@ fun DiscoverProductsSection() {
 
 }
 @Composable
-fun DemoProduct() {
+fun DemoProduct(viewModel: PetProfileViewModel) {
     val scrollState = rememberScrollState()
+    val products = viewModel.filteredProducts.observeAsState(initial = emptyList()).value
+    // Tạo trạng thái để lưu sản phẩm được chọn
+    //val dogProducts = products.filter { product -> product.type == "2" }
+    // Kiểm tra nếu có sản phẩm loại "dog" thì hiển thị, nếu không thì thông báo không có sản phẩm
+//    if (dogProducts.isNotEmpty()) {
+//        Row(
+//            modifier = Modifier
+//                .padding(0.dp, 20.dp, 0.dp, 0.dp)
+//                .fillMaxWidth()
+//                .horizontalScroll(scrollState),
+//            horizontalArrangement = Arrangement.spacedBy(10.dp)
+//        ) {
+//            // Hiển thị từng sản phẩm loại "dog"
+//            dogProducts.forEach { product ->
+//                Containerdemo(
+//                    text1 = product.tensanpham,
+//                    text2 = product.motasanpham,
+//                    text3 = product.giasp,
+//                    painter = rememberImagePainter(data = product.hinhanh) // Hiển thị ảnh sản phẩm
+//                )
+//            }
+//        }
+//    } else {
+//        // Nếu không có sản phẩm loại "dog"
+//        Text("No Dog Products available")
+//    }
+//}
 
+    if (products != null && products.isNotEmpty()) {
     Row(
         modifier = Modifier
             .padding(0.dp,20.dp,0.dp,0.dp)
@@ -426,84 +471,113 @@ fun DemoProduct() {
         horizontalArrangement = Arrangement.spacedBy(10.dp)
 
     ){
-        Containerdemo(
-            text1 = "Vitamin E",
-            text2 = "BO sung canxi" ,
-            painter = painterResource(id = R.drawable.pet_food_bro)
-        )
-        Containerdemo(
-            text1 = "Vitamin E",
-            text2 = "BO sung canxi" ,
-            painter = painterResource(id = R.drawable.pet_food_bro)
-        )
-        Containerdemo(
-            text1 = "Vitamin E",
-            text2 = "BO sung canxi" ,
-            painter = painterResource(id = R.drawable.pet_food_bro)
-        )
-        Containerdemo(
-            text1 = "Vitamin E",
-            text2 = "BO sung canxi" ,
-            painter = painterResource(id = R.drawable.pet_food_bro)
-        )
-        Containerdemo(
-            text1 = "Vitamin E",
-            text2 = "BO sung canxi" ,
-            painter = painterResource(id = R.drawable.pet_food_bro)
-        )
-    }
+        products.forEach { product ->
+            Containerdemo(
+                text1 = product.tensanpham,
+                text2 = product.motasanpham,
+                text3 = product.giasp,
+                painter = rememberImagePainter(data = product.hinhanh) // Replace with actual image
+        ,onItemClicked = {
+                    // Hành động khi nhấn vào sản phẩm (nếu cần)
+                    // Bạn có thể để trống nếu không có hành động cụ thể
+                }
+            )
+        }
+
+    }}
+        else{
+            Text("No Product available")
+        }
 }
 @Composable
-fun BottomNavigationBar() {
+fun BottomNavigationBar(currentScreen: MutableState<Screen>) {
     BottomNavigation(
         backgroundColor = Color.White,
-        contentColor = Color.Gray
+        contentColor = Color.Gray,
+       // modifier = Modifier.offset(y = (-35).dp) // Di chuyển BottomNavigationBar lên 4dp
+
     ) {
         BottomNavigationItem(
-            icon = { Icon(Icons.Default.Home, contentDescription = null) },
+            icon = {
+                Image(
+                    painter = painterResource(id = R.drawable.store), // Thay thế bằng ảnh của bạn
+                    contentDescription = "Home Icon",
+                    modifier = Modifier.size(24.dp) // Điều chỉnh kích thước nếu cần
+                )
+            },
             label = {
                 Text(
                     "Home",
-                fontSize = 10.sp) },
-            selected = true,
+                    fontSize = 10.sp
+                )
+            },
+            selected = currentScreen.value is Screen.Home,
             onClick = {
-
+                currentScreen.value = Screen.Home
             },
             selectedContentColor = Color(0xFF469E67),
             unselectedContentColor = Color.Gray
         )
         BottomNavigationItem(
-            icon = { Icon(Icons.Default.Place, contentDescription = null) },
-            label = { Text("Thú y",
+            icon = {
+                Image(
+                    painter = painterResource(id = R.drawable.shopping_cart), // Thay thế bằng ảnh của bạn
+                    contentDescription = "Cart Icon",
+                    modifier = Modifier.size(24.dp) // Điều chỉnh kích thước nếu cần
+                )
+            },
+            label = { Text("Cart",
                 fontSize = 10.sp) },
             selected = false,
             onClick = {
-
+                currentScreen.value = Screen.Cart
             }
         )
         BottomNavigationItem(
-            icon = { Icon(Icons.Default.ShoppingCart, contentDescription = null) },
+            icon = {
+                Image(
+                    painter = painterResource(id = R.drawable.grocery_store), // Thay thế bằng ảnh của bạn
+                    contentDescription = "Grocery Icon",
+                    modifier = Modifier.size(24.dp) // Điều chỉnh kích thước nếu cần
+                )
+            },
             label = { Text("Store", fontSize = 10.sp) },
-            selected = false,
-            onClick = {
-
-            }
+            selected = currentScreen.value is Screen.Store,
+            onClick = { currentScreen.value = Screen.Store },
+            selectedContentColor = Color(0xFF469E67),
+            unselectedContentColor = Color.Gray
         )
         BottomNavigationItem(
-            icon = { Icon(Icons.Default.List, contentDescription = null) },
+            icon = {
+                Image(
+                    painter = painterResource(id = R.drawable.diet), // Thay thế bằng ảnh của bạn
+                    contentDescription = "Diet Icon",
+                    modifier = Modifier.size(24.dp) // Điều chỉnh kích thước nếu cần
+                )
+            },
             label = { Text("Diet", fontSize = 10.sp) },
-            selected = false,
+            selected = currentScreen.value is Screen.Bag,
             onClick = {
-
-            }
+            currentScreen.value = Screen.Bag
+            },
+            selectedContentColor = Color(0xFF469E67),
+            unselectedContentColor = Color.Gray
         )
         BottomNavigationItem(
-            icon = { Icon(Icons.Default.DateRange, contentDescription = null) },
+            icon = {
+                Image(
+                    painter = painterResource(id = R.drawable.school_bag), // Thay thế bằng ảnh của bạn
+                    contentDescription = "BackPack Icon",
+                    modifier = Modifier.size(24.dp) // Điều chỉnh kích thước nếu cần
+                )
+            },
             label = { Text("Reserve", fontSize = 10.sp) },
             selected = false,
             onClick = {
 
-            }
+            },
+            selectedContentColor = Color(0xFF469E67),
+            unselectedContentColor = Color.Gray
         )
     }
 }
@@ -511,7 +585,13 @@ fun BottomNavigationBar() {
 @Preview
 @Composable
 fun ViewhomeScreen(){
+
+    val petProfileViewModel: PetProfileViewModel = viewModel() // Khởi tạo ViewModel
+    val navController = rememberNavController()
+    val cartViewModel: CartViewModel = viewModel()
+
     MyApplicationTheme {
-        PetProfileScreen()
+
+        PetProfileScreen( petProfileViewModel = petProfileViewModel,cartViewModel = cartViewModel,navController )
     }
 }

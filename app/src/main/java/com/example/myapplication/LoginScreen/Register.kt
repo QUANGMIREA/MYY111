@@ -1,6 +1,8 @@
 package com.example.myapplication.LoginScreen
 
 
+import android.content.Context
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.getValue
@@ -15,7 +17,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 
 import androidx.compose.material.icons.Icons
@@ -157,7 +158,7 @@ fun Register(navController: NavController) {
                 onClick = {
 
                     registerUser(context, fullname, email, username, password, navController)
-                    navController.navigate("Addprofile")
+
                 }
             )
 
@@ -196,10 +197,16 @@ fun registerUser(context: android.content.Context, fullname: String, email: Stri
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 val loginResponse = response.body()
                 if (loginResponse != null && loginResponse.success == true) {
-                    // Đăng ki thành công
-                    Toast.makeText(context, loginResponse.message, Toast.LENGTH_SHORT).show()
-                    // Điều hướng sang màn hình khác
-                    //navController.navigate("HomeScreen")
+                   // val userId: Int = loginResponse.user_id ?: -1  // Nếu user_id là null, sẽ gán -1
+                    // Lấy user_id từ phản hồi API
+
+                    // Lưu user_id vào SharedPreferences
+
+                 //   val sharedPreferences = context.getSharedPreferences("user_session", Context.MODE_PRIVATE)
+                    //val editor = sharedPreferences.edit()
+                   // editor.putInt("user_id", userId)
+                    //editor.apply()
+                    navController.navigate("Infopet")
                 } else {
                     // Đăng ki thất bại
                     Toast.makeText(context, loginResponse?.message , Toast.LENGTH_SHORT).show()
